@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- KALB mark — canonical source. Colors/geometry mirror
+     complete-version/shared/theme.css (.kalb-mark-stroke/.kalb-mark-disk):
+     gold #fbbf24 strokes, red #b0102f disk, both with a soft glow.
+     The HTML copies (baseline.html, board.html, index.html, components.html,
+     rulebook) are still inlined by hand and not generated from this file —
+     this is a standalone reference for reuse in other SVG work (Inkscape, etc). -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 60" width="120" height="60">
+  <defs>
+    <filter id="kalb-mark-glow-gold" x="-75%" y="-75%" width="250%" height="250%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="2.4" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="kalb-mark-glow-red" x="-75%" y="-75%" width="250%" height="250%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="2.8" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <g fill="none" stroke="#fbbf24" stroke-width="7" stroke-linecap="round" filter="url(#kalb-mark-glow-gold)">
+    <line x1="12" y1="6" x2="12" y2="54"/>
+    <line x1="12" y1="30" x2="38" y2="6"/>
+    <line x1="12" y1="30" x2="38" y2="54"/>
+    <line x1="108" y1="6" x2="108" y2="54"/>
+    <line x1="108" y1="30" x2="82" y2="6"/>
+    <line x1="108" y1="30" x2="82" y2="54"/>
+  </g>
+  <circle cx="60" cy="30" r="7" fill="#b0102f" filter="url(#kalb-mark-glow-red)"/>
+</svg>
