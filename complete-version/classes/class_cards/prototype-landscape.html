@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>KALBLAST Card Prototype — Landscape</title>
+  <link rel="stylesheet" href="../../shared/theme.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    /* Disposable comparison prototype — not part of the build/export pipeline.
+       See complete-version/classes/class_cards/baseline.html for the shipped template. */
+    body {
+      font-family: 'Manrope', sans-serif;
+      background: #0d0a12;
+      margin: 0;
+      padding: 40px;
+    }
+
+    h1 {
+      color: #fff;
+      font-size: 20px;
+      margin: 0 0 4px 0;
+    }
+
+    p.intro {
+      color: #94a3b8;
+      font-size: 13px;
+      margin: 0 0 32px 0;
+    }
+
+    .cards-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 32px;
+    }
+
+    /* ── Landscape card — illustration fixed to the right ────────── */
+    /* Everything sits on one flat black card. The old "two boxes with two
+       backgrounds" approach always showed a seam because the tint gradient
+       on one box could never exactly match the gradient on the other. Now
+       the portrait is a single layer that fades to transparent via mask-image,
+       revealing the same flat black underneath — there is no second surface
+       for a line to appear against. */
+    .card {
+      width: 820px;
+      height: 420px;
+      border-radius: 16px;
+      box-shadow: 0 20px 40px rgba(20,4,10,0.7), inset 0 0 0 2px rgba(176, 16, 47, 0.35);
+      position: relative;
+      overflow: hidden;
+      background: #000;
+    }
+
+    .illustration-layer {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: 46%;
+      background-image: var(--illustration-image);
+      background-size: cover;
+      background-position: center;
+      -webkit-mask-image: linear-gradient(to right, transparent 0%, black 55%);
+      mask-image: linear-gradient(to right, transparent 0%, black 55%);
+    }
+
+    /* A softer, blurred echo of the portrait bridging the last stretch into
+       black, so the transition reads as a haze rather than a clean gradient
+       cutoff. Uses filter (not backdrop-filter) — see baseline.html's
+       "FIXED FOR DOWNLOADS" note on why backdrop-filter is avoided: it
+       doesn't survive the html-to-image PNG export used for the real cards. */
+    .illustration-layer::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: var(--illustration-image);
+      background-size: cover;
+      background-position: center;
+      filter: blur(34px);
+      opacity: 0.5;
+      -webkit-mask-image: linear-gradient(to right, transparent 0%, black 30%, transparent 62%);
+      mask-image: linear-gradient(to right, transparent 0%, black 30%, transparent 62%);
+    }
+
+    .info-panel {
+      position: relative;
+      width: 56%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      padding: 22px 24px;
+      box-sizing: border-box;
+      background: transparent;
+    }
+
+    .name-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    /* Placeholder — stands in for characters whose symbol isn't drawn yet. */
+    .symbol-placeholder {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      border: 1.5px dashed color-mix(in srgb, var(--theme-color) 70%, white 15%);
+      color: var(--theme-color-text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+
+    /* Real per-character symbol, once drawn: solid circle in the
+       character's own theme color, icon in the same contrast-safe color
+       already computed for the cost badge (--badge-text-color). */
+    .symbol-badge {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: var(--theme-color);
+      color: var(--badge-text-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.4), inset 0 0 0 1px rgba(255,255,255,0.2);
+    }
+
+    .symbol-badge .symbol-icon {
+      width: 60%;
+      height: 60%;
+    }
+
+    .name-block {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .class-title {
+      font-size: 24px;
+      font-weight: 900;
+      color: #ffffff;
+      margin: 0;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .class-subtitle {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      margin: 4px 0 0 0;
+      font-weight: 700;
+      color: var(--theme-color-text);
+    }
+
+    .difficulty-box {
+      text-align: center;
+      background: #14101c;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      padding: 4px 8px;
+      border-radius: 6px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+      flex-shrink: 0;
+    }
+
+    .difficulty-label {
+      font-size: 8px;
+      font-weight: 800;
+      color: #a19da8;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 1px;
+    }
+
+    .stars {
+      color: #fbbf24;
+      font-size: 10px;
+      letter-spacing: 0.5px;
+      line-height: 1;
+    }
+
+    .section-title {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-bottom: 6px;
+      color: var(--theme-color-text);
+      text-align: left;
+    }
+
+    .active-ability-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+      width: 100%;
+    }
+
+    .active-title-text {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--theme-color-text);
+      text-align: left;
+      margin: 0;
+      white-space: nowrap;
+    }
+
+    .cost-badge {
+      background: var(--theme-color);
+      color: var(--badge-text-color);
+      font-size: 10px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      width: 25px;
+      height: 25px;
+      border-radius: 50%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      line-height: 1.1;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.4), inset 0 0 0 1px rgba(255,255,255,0.2);
+      text-shadow: 0 1px 3px rgba(0,0,0,0.6);
+      flex-shrink: 0;
+      margin-left: 12px;
+    }
+
+    .rules-text {
+      font-size: 12px;
+      color: #e2e8f0;
+      line-height: 1.5;
+      margin: 0 0 14px 0;
+      text-align: left;
+    }
+
+    .rules-text:last-of-type {
+      margin-bottom: 0;
+    }
+
+    .kalb-divider {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 10px 0;
+    }
+
+    .kalb-divider .kalb-divider-line {
+      flex: 1;
+      height: 1px;
+      background: rgba(251, 191, 36, 0.4);
+    }
+
+    .kalb-divider .kalb-mark {
+      flex-shrink: 0;
+      opacity: 0.85;
+    }
+
+    .kalb-mark-stroke {
+      stroke: #fbbf24;
+      fill: none;
+    }
+
+    .kalb-mark-disk {
+      fill: #fbbf24;
+    }
+
+    .flavor-text {
+      font-style: italic;
+      font-size: 10px;
+      color: #94a3b8;
+      text-align: center;
+      margin-top: auto;
+      padding-top: 10px;
+    }
+
+  </style>
+</head>
+<body>
+
+  <!-- Per-character symbols, defined once and referenced via <use>. Paths
+       come from complete-version/shared/<name>.svg, stripped of their
+       hidden Inkscape reference layers and given fill="currentColor" so
+       each renders in whatever color the .symbol-badge sets (see
+       --badge-text-color above). Only characters present in
+       CHARACTER_SYMBOLS below get the real badge — everyone else keeps
+       the dashed placeholder. -->
+  <svg width="0" height="0" style="position: absolute; overflow: hidden;" aria-hidden="true">
+    <defs>
+      <symbol id="symbol-clazgreb" viewBox="0 0 50 50">
+        <g fill="currentColor">
+          <path d="M 17.456299,23.37325 10.13995,39.280806 h 7.316349 14.633215 7.316866 L 32.089514,23.37325 Z m 7.209896,1.063501 a 6.402195,6.9595079 0 0 1 6.402193,6.959265 6.402195,6.9595079 0 0 1 -6.402193,6.959782 6.402195,6.9595079 0 0 1 -6.402194,-6.959782 6.402195,6.9595079 0 0 1 6.402194,-6.959265 z" />
+          <path d="m 24.773165,27.350269 a 3.6583972,3.9768615 0 0 0 -3.658692,3.976501 3.6583972,3.9768615 0 0 0 3.658692,3.977018 3.6583972,3.9768615 0 0 0 3.658175,-3.977018 3.6583972,3.9768615 0 0 0 -3.658175,-3.976501 z" />
+          <path d="m 24.836876,13.420819 c -5.87452,0.01622 -11.567136,1.790519 -16.1381019,5.030006 V 20.00762 C 6.4012607,21.286906 5.0064962,23.507223 5,25.895678 c 0.1080679,3.472677 2.7728603,6.361487 6.223333,6.332606 l 6.653658,-11.285299 h 14.025853 l 6.65299,11.285299 C 40.362538,32.284828 44.974008,29.978918 45,25.482174 44.9984,22.970022 43.461945,21.250264 40.974983,20.00762 V 18.402212 C 36.396622,15.180186 30.704719,13.423251 24.836876,13.420819 Z" />
+        </g>
+      </symbol>
+    </defs>
+  </svg>
+
+  <h1>Landscape card layout — prototype</h1>
+  <p class="intro">Illustration fixed to the right, fading via a mask into a flat black card instead of a second colored panel — no seam to see. Not wired into the build pipeline.</p>
+
+  <div id="cards-root"></div>
+
+  <!-- Reuse the real character data + inlined portraits, no duplication. -->
+  <script src="characters.en.js"></script>
+  <script src="character-images.generated.js"></script>
+
+  <script>
+    // Same WCAG-driven color derivation as baseline.html, copied verbatim
+    // since this prototype doesn't share a module with it.
+    function hexToRgb(hex) {
+      hex = hex.replace('#', '');
+      return [parseInt(hex.slice(0, 2), 16), parseInt(hex.slice(2, 4), 16), parseInt(hex.slice(4, 6), 16)];
+    }
+    function rgbToHex([r, g, b]) {
+      return '#' + [r, g, b].map(v => Math.round(Math.max(0, Math.min(255, v))).toString(16).padStart(2, '0')).join('');
+    }
+    function rgbToHsl([r, g, b]) {
+      r /= 255; g /= 255; b /= 255;
+      const max = Math.max(r, g, b), min = Math.min(r, g, b);
+      let h, s, l = (max + min) / 2;
+      if (max === min) { h = s = 0; }
+      else {
+        const d = max - min;
+        s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+        switch (max) {
+          case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+          case g: h = (b - r) / d + 2; break;
+          default: h = (r - g) / d + 4;
+        }
+        h /= 6;
+      }
+      return [h, s, l];
+    }
+    function hslToRgb([h, s, l]) {
+      if (s === 0) return [l * 255, l * 255, l * 255];
+      const hue2rgb = (p, q, t) => {
+        if (t < 0) t += 1;
+        if (t > 1) t -= 1;
+        if (t < 1 / 6) return p + (q - p) * 6 * t;
+        if (t < 1 / 2) return q;
+        if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+        return p;
+      };
+      const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+      const p = 2 * l - q;
+      return [hue2rgb(p, q, h + 1 / 3) * 255, hue2rgb(p, q, h) * 255, hue2rgb(p, q, h - 1 / 3) * 255];
+    }
+    function srgbToLinear(c) {
+      c /= 255;
+      return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+    }
+    function relativeLuminance([r, g, b]) {
+      return 0.2126 * srgbToLinear(r) + 0.7152 * srgbToLinear(g) + 0.0722 * srgbToLinear(b);
+    }
+    function contrastRatio(fg, bg) {
+      const l1 = relativeLuminance(fg), l2 = relativeLuminance(bg);
+      const lighter = Math.max(l1, l2), darker = Math.min(l1, l2);
+      return (lighter + 0.05) / (darker + 0.05);
+    }
+    const PANEL_WORST_CASE_BG = [21, 17, 30];
+    function deriveTextSafeColor(themeHex) {
+      if (contrastRatio(hexToRgb(themeHex), PANEL_WORST_CASE_BG) >= 4.5) return themeHex;
+      const [h, s, l] = rgbToHsl(hexToRgb(themeHex));
+      let lightness = l;
+      for (let step = 0; step < 100; step++) {
+        lightness = Math.min(0.85, lightness + 0.01);
+        const candidate = hslToRgb([h, s, lightness]);
+        if (contrastRatio(candidate, PANEL_WORST_CASE_BG) >= 4.5 || lightness >= 0.85) return rgbToHex(candidate);
+      }
+      return themeHex;
+    }
+    function deriveBadgeTextColor(themeHex) {
+      const theme = hexToRgb(themeHex);
+      const white = [255, 255, 255], black = [20, 16, 26];
+      return contrastRatio(white, theme) >= contrastRatio(black, theme) ? '#ffffff' : '#14101a';
+    }
+
+    const KALB_MARK_SVG = `
+      <svg viewBox="0 0 120 60" width="24" height="12" aria-hidden="true">
+        <g class="kalb-mark-stroke" style="stroke-width: 10;">
+          <line x1="12" y1="6" x2="12" y2="54"/>
+          <line x1="12" y1="30" x2="38" y2="6"/>
+          <line x1="12" y1="30" x2="38" y2="54"/>
+          <line x1="108" y1="6" x2="108" y2="54"/>
+          <line x1="108" y1="30" x2="82" y2="6"/>
+          <line x1="108" y1="30" x2="82" y2="54"/>
+        </g>
+        <circle class="kalb-mark-disk" cx="60" cy="30" r="8"/>
+      </svg>`;
+
+    // Characters whose real symbol has been drawn (complete-version/shared/<name>.svg).
+    // Everyone else falls back to the dashed placeholder.
+    const CHARACTER_SYMBOLS = {
+      Clazgreb: 'symbol-clazgreb',
+    };
+
+    function renderCard(char) {
+      const starIcons = "★".repeat(char.difficulty);
+      const textSafeColor = deriveTextSafeColor(char.color);
+      const badgeTextColor = deriveBadgeTextColor(char.color);
+      const imageUrl = CHARACTER_IMAGES[char.image] || char.image;
+      const symbolId = CHARACTER_SYMBOLS[char.name];
+      const symbolMarkup = symbolId
+        ? `<div class="symbol-badge"><svg class="symbol-icon" viewBox="0 0 50 50" aria-hidden="true"><use href="#${symbolId}"></use></svg></div>`
+        : `<div class="symbol-placeholder">?</div>`;
+
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.style.setProperty('--theme-color', char.color);
+      card.style.setProperty('--theme-color-text', textSafeColor);
+      card.style.setProperty('--badge-text-color', badgeTextColor);
+      card.style.setProperty('--illustration-image', `url('${imageUrl}')`);
+
+      card.innerHTML = `
+        <div class="illustration-layer"></div>
+        <div class="info-panel">
+          <div class="name-row">
+            ${symbolMarkup}
+            <div class="name-block">
+              <h1 class="class-title">${char.name}</h1>
+              <p class="class-subtitle">${char.title}</p>
+            </div>
+            <div class="difficulty-box">
+              <div class="difficulty-label">Difficulty</div>
+              <div class="stars">${starIcons}</div>
+            </div>
+          </div>
+
+          <div class="section-title">⚙️ ${char.traitName}</div>
+          <p class="rules-text">${char.traitDesc}</p>
+
+          <div class="kalb-divider">
+            <span class="kalb-divider-line"></span>
+            <span class="kalb-mark">${KALB_MARK_SVG}</span>
+            <span class="kalb-divider-line"></span>
+          </div>
+
+          <div class="active-ability-row">
+            <h2 class="active-title-text">⚡ ${char.abilityName}</h2>
+            <span class="cost-badge">${char.abilityCost}</span>
+          </div>
+          <p class="rules-text">${char.abilityDesc}</p>
+
+          <div class="flavor-text">${char.flavor}</div>
+        </div>
+      `;
+
+      return card;
+    }
+
+    // Short ability text, long ability text, and a third hue, to stress-test
+    // both the text column and the theme-color panel tint across colors.
+    const SAMPLE_NAMES = ["Clazgreb", "Turbo Killer", "Hans Pinner"];
+    const root = document.getElementById('cards-root');
+
+    const grid = document.createElement('div');
+    grid.className = 'cards-grid';
+    root.appendChild(grid);
+
+    SAMPLE_NAMES.forEach((name) => {
+      const char = characters_en.find(c => c.name === name);
+      grid.appendChild(renderCard(char));
+    });
+  </script>
+</body>
+</html>

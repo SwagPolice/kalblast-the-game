@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="80.606064mm"
+   height="114mm"
+   viewBox="0 0 80.605954 114"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.3.2 (091e20e, 2023-11-25, custom)"
+   sodipodi:docname="sh-f.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     showguides="true"
+     inkscape:zoom="1.1802867"
+     inkscape:cx="210.11843"
+     inkscape:cy="301.198"
+     inkscape:window-width="1920"
+     inkscape:window-height="991"
+     inkscape:window-x="-9"
+     inkscape:window-y="-9"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs1">
+    <filter
+       id="kalb-mark-glow-gold-0"
+       x="-0.23362805"
+       y="-0.2156566"
+       width="1.4672561"
+       height="1.4313132">
+      <feGaussianBlur
+         in="SourceGraphic"
+         stdDeviation="2.4"
+         result="blur"
+         id="feGaussianBlur1-8" />
+      <feMerge
+         id="feMerge2-7">
+        <feMergeNode
+           in="blur"
+           id="feMergeNode1-3" />
+        <feMergeNode
+           in="SourceGraphic"
+           id="feMergeNode2-2" />
+      </feMerge>
+    </filter>
+  </defs>
+  <g
+     inkscape:label="Calque 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <path
+       id="text6-7"
+       style="font-size:192px;font-family:'Agency FB';-inkscape-font-specification:'Agency FB';text-align:center;text-anchor:middle;white-space:pre;fill:#fbbf24;stroke-width:0.36908"
+       d="m 19.994654,33.547306 2.084111,20.414256 c 13.677788,14.432447 26.66969,27.521 26.66969,44.442769 l -16.810342,-0.0253 C 31.230661,81.598412 31.393704,87.329462 31.230661,81.598412 h -7.7556 l 1.906259,22.451518 c 9.988063,0.027 19.976185,-0.0526 29.962876,0.12413 L 57.156212,81.598412 C 42.938807,68.184702 29.841391,53.447041 29.405969,39.558234 l 21.789364,-0.0243 c -0.584514,11.803229 -0.129841,-0.399983 -0.931209,14.427628 h 3.659717 4.433847 c 0.940379,-7.448478 1.554215,-12.939925 2.253612,-20.41434 l -20.255354,4e-5 c -0.0305,10e-6 -20.361292,4.4e-5 -20.361292,4.4e-5 z"
+       sodipodi:nodetypes="ccccccccccccccccc" />
+    <path
+       id="line5"
+       style="fill:none;stroke:#fbbf24;stroke-width:19.1355;stroke-linecap:round;filter:url(#kalb-mark-glow-gold-0)"
+       d="M -15.137497,88.612091 -80.744987,17.537289"
+       transform="matrix(0.25883267,0,0,0.2652703,44.221054,12.596947)" />
+    <path
+       id="line6"
+       style="fill:none;stroke:#fbbf24;stroke-width:19.1355;stroke-linecap:round;filter:url(#kalb-mark-glow-gold-0)"
+       d="M -15.137497,88.612091 50.469997,17.537289"
+       transform="matrix(0.25883267,0,0,0.2652703,44.221054,12.596947)" />
+    <circle
+       cx="-14.711029"
+       cy="40.302979"
+       r="5.0629392"
+       id="circle9"
+       transform="rotate(-90)"
+       fill="#b0102f"
+       style="stroke-width:0.723277" />
+  </g>
+</svg>
