@@ -386,10 +386,45 @@
       </a>
     </div>
     <p class="tools-note">
-      <span data-lang-content="en">You'll also need two regular 6-sided dice. Clazgreb's abilities call for a 60-sided die — a physical d60 isn't practical to include, so use a dice-roller app on your phone instead.</span>
-      <span data-lang-content="fr" hidden>Il vous faudra aussi deux dés à 6 faces classiques. Les capacités de Clazgreb demandent un dé à 60 faces — un d60 physique n'est pas pratique à fournir, utilisez plutôt une application de lancer de dés sur votre téléphone.</span>
-      <span data-lang-content="da" hidden>Du skal også bruge to almindelige 6-sidede terninger. Clazgrebs evner kræver en 60-sidet terning — en fysisk d60 er ikke praktisk at inkludere, så brug i stedet en terningeapp på din telefon.</span>
+      <span data-lang-content="en">You'll also need two regular 6-sided dice. Clazgreb's abilities call for a 60-sided die — a physical d60 isn't practical to include, so use the dice roller below instead.</span>
+      <span data-lang-content="fr" hidden>Il vous faudra aussi deux dés à 6 faces classiques. Les capacités de Clazgreb demandent un dé à 60 faces — un d60 physique n'est pas pratique à fournir, utilisez plutôt le lanceur de dés ci-dessous.</span>
+      <span data-lang-content="da" hidden>Du skal også bruge to almindelige 6-sidede terninger. Clazgrebs evner kræver en 60-sidet terning — en fysisk d60 er ikke praktisk at inkludere, så brug i stedet terningkasteren nedenfor.</span>
     </p>
+  </section>
+
+  <section id="dice">
+    <span class="eyebrow" data-lang-content="en">At the table</span>
+    <span class="eyebrow" data-lang-content="fr" hidden>À table</span>
+    <span class="eyebrow" data-lang-content="da" hidden>Ved bordet</span>
+    <h2>
+      <span data-lang-content="en">Dice roller</span>
+      <span data-lang-content="fr" hidden>Lanceur de dés</span>
+      <span data-lang-content="da" hidden>Terningkaster</span>
+    </h2>
+    <p class="lede">
+      <span data-lang-content="en">Pick your character on your phone to see their card and roll exactly the dice it calls for — d60 included.</span>
+      <span data-lang-content="fr" hidden>Choisissez votre personnage sur votre téléphone pour voir sa carte et lancer exactement les dés dont elle a besoin — d60 compris.</span>
+      <span data-lang-content="da" hidden>Vælg din karakter på telefonen for at se kortet og slå præcis de terninger, det kræver — d60 inklusive.</span>
+    </p>
+    <div class="grid">
+      <a class="card-link" data-keep-lang href="complete-version/dice/dice.html">
+        <span class="title">
+          <span data-lang-content="en">Roll your character's dice</span>
+          <span data-lang-content="fr" hidden>Lancer les dés de votre personnage</span>
+          <span data-lang-content="da" hidden>Slå din karakters terninger</span>
+        </span>
+        <span class="desc">
+          <span data-lang-content="en">In-browser, all 10 characters</span>
+          <span data-lang-content="fr" hidden>Dans le navigateur, les 10 personnages</span>
+          <span data-lang-content="da" hidden>I browseren, alle 10 karakterer</span>
+        </span>
+        <span class="go">
+          <span data-lang-content="en">Open →</span>
+          <span data-lang-content="fr" hidden>Ouvrir →</span>
+          <span data-lang-content="da" hidden>Åbn →</span>
+        </span>
+      </a>
+    </div>
   </section>
 
   <footer>
@@ -412,6 +447,10 @@
   initLangToggle(function (lang) {
     document.querySelectorAll('[data-lang-content]').forEach(function (el) {
       el.hidden = el.getAttribute('data-lang-content') !== lang;
+    });
+    // Pages that read ?lang= open in the language picked here.
+    document.querySelectorAll('a[data-keep-lang]').forEach(function (a) {
+      a.href = a.getAttribute('href').split('?')[0] + (lang === 'en' ? '' : '?lang=' + lang);
     });
   });
 </script>
