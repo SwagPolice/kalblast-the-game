@@ -98,17 +98,17 @@ const characters_fr = [
     flavor: '« Je vais annihiler ce consortium en carton-pâte. »'
   },
   {
-    name: "« Mamie » Luc",
-    title: "Mascotte LBGTQIA+",
+    name: "Ego Clemund",
+    title: "Journaliste Phare",
     image: "priest.jpg",
     color: "#afa8a8",
     difficulty: 2,
-    traitName: "Marche des Fiertés",
+    traitName: "Priorité au Direct",
     traitDesc: "Lancez 1d6 pour vous déplacer. <b>Une fois par manche</b>, quand le joueur le plus proche devant vous sur le plateau boit, vous pouvez aller directement sur sa salle et boire le double à sa place.",
-    abilityName: "Je Préfère le Thé",
+    abilityName: "Gaslighting Post-Vérité",
     abilityCost: "1Š",
     abilityDesc: "Obtenez 1d3 jetons (3 maximum à la fois). Chaque fois que vous devez 1Š ou plus, vous pouvez défausser un jeton. Si vous le faites, lancez 1d6 : vous pouvez alors boire ce nombre de gorgées pour chaque Š dû, au lieu du Š lui-même — ou simplement boire le Š si vous préférez. <br><i>Exception : vous ne pouvez pas utiliser ceci sur le coût en Š de l'activation de cette capacité.</i>",
-    flavor: '« Parfois je me demande ce que je fais ici... »'
+    flavor: '« Casser l\'audimat demande parfois de casser des bouches. »'
   },
   {
     name: "Paul Guaca",
