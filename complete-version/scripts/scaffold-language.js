@@ -92,11 +92,12 @@ planCopy('boards/board-rules.en.js', `boards/board-rules.${lang}.js`,
 
 planCopy('rulebook/rulebook.md', `rulebook/rulebook.${lang}.md`);
 
-// ---- 2. Language buttons (same pattern across 5 pages) --------------------
+// ---- 2. Language buttons (same pattern across 6 pages) --------------------
 
 const BUTTON_FILES = [
   { abs: path.join(REPO_ROOT, 'index.html'), label: 'index.html' },
   { abs: path.join(ROOT, 'components/components.html'), label: 'complete-version/components/components.html' },
+  { abs: path.join(ROOT, 'dice/dice.html'), label: 'complete-version/dice/dice.html' },
   { abs: path.join(ROOT, 'rulebook/rulebook-head.html'), label: 'complete-version/rulebook/rulebook-head.html' },
   { abs: path.join(ROOT, 'boards/board.html'), label: 'complete-version/boards/board.html' },
   { abs: path.join(ROOT, 'classes/class_cards/baseline.html'), label: 'complete-version/classes/class_cards/baseline.html' },
@@ -178,7 +179,7 @@ planEditFile(path.join(ROOT, 'classes/class_cards/baseline.html'), 'complete-ver
   return { updated, notes };
 });
 
-// ---- 5. Bilingual content blocks in index.html / components.html --------
+// ---- 5. Bilingual content blocks in index.html / components.html / dice.html
 //
 // Walks the file line by line. Whenever it finds a line opening a tag with
 // data-lang-content="en" (single-line self-closing, like a <span>, or a
@@ -274,6 +275,7 @@ function duplicateLangBlocks(content) {
 for (const { abs, label } of [
   { abs: path.join(REPO_ROOT, 'index.html'), label: 'index.html' },
   { abs: path.join(ROOT, 'components/components.html'), label: 'complete-version/components/components.html' },
+  { abs: path.join(ROOT, 'dice/dice.html'), label: 'complete-version/dice/dice.html' },
 ]) {
   planEditFile(abs, label, (content) => duplicateLangBlocks(content));
 }
