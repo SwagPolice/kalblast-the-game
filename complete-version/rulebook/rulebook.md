@@ -59,7 +59,7 @@ When their president, Wanda Olsam, goes missing, they do the only thing imaginab
 *   `6x` **Protective Light Tokens**
 *   `3x` **Landmine Tokens**
 *   `6x` **Advisor Tokens**
-*   `1x` **Pride Parade Token**
+*   `1x` **Priority to Live Coverage Token**
 *   `1x` **Clazgreb Template**
 *   `1x` **Brenchilli Template**
 *   `2x` **6-sided Dice**
@@ -102,7 +102,7 @@ Gameplay proceeds clockwise, player by player.
 ⚠️ **State Change Interaction:** Whenever a player changes rooms *outside* of their own turn (due to displacement effects or abilities), they **do not trigger** the room's text effect.
 :::
 
-*Pay close attention to cooldowns and ability refreshes! Certain actions or passives (such as Grandma Luke's passive) can occur during an opponent's turn, but can only be executed once per round.*
+*Pay close attention to cooldowns and ability refreshes! Certain actions or passives (such as Ego Clemund's passive) can occur during an opponent's turn, but can only be executed once per round.*
 
 ### Anatomy of a Turn
 On your turn, you **must** complete your Mandatory Movement and **may** choose to use your active ability. You possess complete tactical flexibility over your sequence. Choose either **Option A** or **Option B**:
