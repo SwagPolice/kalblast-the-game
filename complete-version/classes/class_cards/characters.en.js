@@ -98,17 +98,17 @@ const characters_en = [
     flavor: '"I will turn this whole board into cardboard."'
   },
   {
-    name: "“Grandma” Luke",
-    title: "Diversity Hire",
+    name: "Ego Clemund",
+    title: "Flagship Journalist",
     image: "priest.jpg",
     color: "#afa8a8",
     difficulty: 2,
-    traitName: "Pride Parade",
+    traitName: "Priority to Live Coverage",
     traitDesc: "Roll 1d6 for movement. <b>Once a round</b>, when the player closest ahead on the board drinks, you may go straight to their room and drink double the amount for them.",
-    abilityName: "I Prefer Tea",
+    abilityName: "Post-Truth Gaslight",
     abilityCost: "1Š",
     abilityDesc: "Obtain 1d3 tokens (max 3 at a time). Whenever you owe 1Š or more, you may discard a token. If you do, roll 1d6: you may then drink that many sips for each Š owed, instead of the Š itself — or still just drink the Š, if you'd rather. <br><i>Exception: you cannot use this on the Š cost of activating this ability.</i>",
-    flavor: '"Sometimes I wonder what I am doing here..."'
+    flavor: '"Sometimes breaking news needs breaking necks."'
   },
   {
     name: "Paul Guaca",

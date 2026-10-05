@@ -98,17 +98,17 @@ const characters_da = [
     flavor: '"Jeg vil forvandle hele dette bræt til pap."'
   },
   {
-    name: "“Bedste” Luke",
-    title: "Mangfoldighedsansættelse",
+    name: "Ego Clemund",
+    title: "Flagskibsjournalist",
     image: "priest.jpg",
     color: "#afa8a8",
     difficulty: 2,
-    traitName: "Pride-parade",
+    traitName: "Prioritet til direkte dækning",
     traitDesc: "Slå 1d6 for bevægelse. <b>Én gang pr. runde</b>, når den spiller, der er tættest foran på brættet, drikker, må du gå direkte til deres rum og drikke det dobbelte for dem.",
-    abilityName: "Jeg foretrækker te",
+    abilityName: "Postfaktuel gaslighting",
     abilityCost: "1Š",
     abilityDesc: "Få 1d3 tegn (maks. 3 ad gangen). Når du skylder 1Š eller mere, må du kassere et tegn. Hvis du gør det, slå 1d6: du må derefter drikke så mange slurke for hver Š, du skylder, i stedet for selve Š'en — eller bare drikke Š'en alligevel, hvis du foretrækker det. <br><i>Undtagelse: du kan ikke bruge dette på Š-omkostningen ved at aktivere denne evne.</i>",
-    flavor: '"Nogle gange tænker jeg på, hvad jeg dog laver her..."'
+    flavor: '"Nogle gange kræver breaking news brækkede nakker."'
   },
   {
     name: "Paul Guaca",
