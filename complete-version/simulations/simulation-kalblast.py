@@ -63,7 +63,7 @@ CLASSES = [
 # Baseline eagerness to use each class's active ability, independent of the
 # individual player's personal aggressivity (see Player.wants_to_use_ability).
 # Per playtest feedback: engagement is class-dependent, not just player-dependent
-# — e.g. Priest ("Grandma" Luke)'s ability is cheap, frequent, low-risk utility
+# — e.g. Priest (Ego Clemund)'s ability is cheap, frequent, low-risk utility
 # and gets used far more readily than the Advisor's big, disruptive, situational
 # swap. These are initial estimates from card design intuition + that signal;
 # tune further as real playtest data comes in (e.g. after the visual card

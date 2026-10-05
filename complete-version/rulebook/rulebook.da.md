@@ -59,7 +59,7 @@ Da deres præsident, Wanda Olsam, forsvinder, gør de det eneste tænkelige — 
 *   `6x` **Beskyttende Lys-tegn**
 *   `3x` **Landmine-tegn**
 *   `6x` **Rådgivertegn**
-*   `1x` **Pride-parade-tegn**
+*   `1x` **Prioritet til direkte dækning-tegn**
 *   `1x` **Clazgreb-skabelon**
 *   `1x` **Brenchilli-skabelon**
 *   `2x` **6-sidede terninger**
@@ -102,7 +102,7 @@ Spillet forløber med uret, spiller for spiller.
 ⚠️ **Interaktion ved tilstandsændring:** Når en spiller skifter rum *uden for* sin egen tur (på grund af forskydningseffekter eller evner), **udløser de ikke** rummets teksteffekt.
 :::
 
-*Vær opmærksom på nedkølingstider og evne-nulstillinger! Visse handlinger eller passiver (såsom "Bedste" Lukes passiv) kan forekomme under en modstanders tur, men kan kun udføres én gang pr. runde.*
+*Vær opmærksom på nedkølingstider og evne-nulstillinger! Visse handlinger eller passiver (såsom Ego Clemunds passiv) kan forekomme under en modstanders tur, men kan kun udføres én gang pr. runde.*
 
 ### Turens anatomi
 På din tur **skal** du gennemføre din obligatoriske bevægelse og **må** vælge at bruge din aktive evne. Du har fuld taktisk frihed over rækkefølgen. Vælg enten **Mulighed A** eller **Mulighed B**:
