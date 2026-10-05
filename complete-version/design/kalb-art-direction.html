@@ -429,26 +429,27 @@
 
     <div class="swatch-group">
       <h3>Character portraits — canvas setup</h3>
-      <p class="lede" style="margin-bottom:16px;">The card is built at tarot proportions (confirmed directly from <code>baseline.html</code>'s card CSS: 350×600px, a 7:12 ratio) — matching this exactly means the final painting drops in with zero cropping surprises.</p>
+      <p class="lede" style="margin-bottom:16px;">The card is landscape (confirmed directly from <code>baseline.html</code>'s card CSS: 820×420px). The portrait isn't full-bleed any more — it fills only the right 46% of the card (377×420px, roughly 9:10) and fades into the flat black text side. Paint for that zone, not the whole card. Physical sizes below keep the same 5px-per-mm scale as the previous portrait card.</p>
       <table class="tokens">
         <thead><tr><th>Setting</th><th>Value</th></tr></thead>
         <tbody>
-          <tr><td>Trim size</td><td class="hex">70 × 120mm</td></tr>
-          <tr><td>Bleed</td><td class="hex">+3mm each edge → 76 × 126mm canvas</td></tr>
+          <tr><td>Card trim size</td><td class="hex">164 × 84mm</td></tr>
+          <tr><td>Illustration zone</td><td class="hex">right 75 × 84mm of the card</td></tr>
+          <tr><td>Bleed</td><td class="hex">+3mm top, right &amp; bottom (the left edge fades out) → 78 × 90mm canvas</td></tr>
           <tr><td>Resolution</td><td class="hex">300 dpi (350–400 dpi for extra zoom headroom)</td></tr>
           <tr><td>Basic expression color</td><td class="hex">Color</td></tr>
           <tr><td>Color mode</td><td class="hex">RGB — not CMYK</td></tr>
-          <tr><td>At 300dpi, canvas ≈</td><td class="hex">898 × 1488 px</td></tr>
+          <tr><td>At 300dpi, canvas ≈</td><td class="hex">921 × 1063 px</td></tr>
         </tbody>
       </table>
       <p class="lede" style="margin: 16px 0;">RGB matters here specifically: every color in this project (this page included) is a web hex value — <span class="hex">#B0102F</span>, <span class="hex">#FBBF24</span>, each signal color — and CMYK conversion would visibly shift them, especially the reds and golds.</p>
 
       <h3 style="margin-top:28px;">Safe zone — where the face actually reads</h3>
-      <p class="lede" style="margin-bottom:14px;">Traced directly from the card's live layout: the name/title plate sits at the top, the trait/ability/flavor text panel takes up roughly the bottom half, and both are semi-opaque dark panels — anything under them reads as a dim shape, not a detail. Approximate, since panel height flexes with each character's text length.</p>
-      <div style="border:1px solid var(--hairline); border-radius: 10px; overflow:hidden; max-width:220px;">
-        <div style="height:70px; background:rgba(24,20,34,0.85); display:flex; align-items:center; justify-content:center; font-size:11px; color:var(--ink-faint); border-bottom:1px solid var(--hairline);">Name / title plate — obscured</div>
-        <div style="height:110px; background:linear-gradient(135deg, rgba(176,16,47,0.1), rgba(251,191,36,0.06)); display:flex; align-items:center; justify-content:center; font-size:11px; color:var(--kalb-gold); font-weight:800;">OPEN — face &amp; key detail here</div>
-        <div style="height:170px; background:rgba(18,14,26,0.9); display:flex; align-items:center; justify-content:center; font-size:11px; color:var(--ink-faint); border-top:1px solid var(--hairline);">Trait / ability / flavor text — obscured</div>
+      <p class="lede" style="margin-bottom:14px;">Traced directly from the card's live layout: name, trait, ability and flavor text sit on flat black across the left 54% of the card, and the illustration zone on the right fades in from transparent over its first ~55%. Only the outer strip is shown at full strength — anything in the fade reads as a dim haze, not a detail. Taller portraits (like the existing 2:3 ones) are anchored to the top and cropped at the bottom only, so keep faces in the upper part of the canvas and nothing essential along the bottom edge.</p>
+      <div style="border:1px solid var(--hairline); border-radius: 10px; overflow:hidden; max-width:420px; display:flex; height:150px;">
+        <div style="width:54%; background:#000; display:flex; align-items:center; justify-content:center; text-align:center; padding:0 10px; font-size:11px; color:var(--ink-faint); border-right:1px solid var(--hairline);">Name / trait / ability / flavor text — no art</div>
+        <div style="width:21%; background:linear-gradient(to right, #000, rgba(176,16,47,0.12)); display:flex; align-items:center; justify-content:center; text-align:center; padding:0 6px; font-size:11px; color:var(--ink-faint);">Fade — dim haze</div>
+        <div style="width:25%; background:linear-gradient(135deg, rgba(176,16,47,0.18), rgba(251,191,36,0.08)); display:flex; align-items:center; justify-content:center; text-align:center; padding:0 6px; font-size:11px; color:var(--kalb-gold); font-weight:800;">OPEN — face &amp; key detail here</div>
       </div>
 
       <h3 style="margin-top:28px;">Filenames — must match exactly</h3>
@@ -471,12 +472,12 @@
 
       <h3 style="margin-top:28px;">Clip Studio Paint — New Canvas steps</h3>
       <ul class="rules-list">
-        <li>File → New. Set the unit dropdown to <strong>mm</strong>, width <strong>76</strong>, height <strong>126</strong>.</li>
+        <li>File → New. Set the unit dropdown to <strong>mm</strong>, width <strong>78</strong>, height <strong>90</strong>.</li>
         <li>Resolution: <strong>300</strong> (or 350–400 if you want extra headroom).</li>
         <li>Basic expression color: <strong>Color</strong>.</li>
-        <li>If your CSP version offers a template/margin option in the New Canvas dialog, set a <strong>3mm</strong> margin on all sides to mark the bleed — otherwise, add a guide layer by hand at 3mm from each edge (Ruler tool, or View → Grid/Guides) once the canvas is open, so you can see trim vs. bleed while you paint.</li>
-        <li>Paint at full canvas size (bleed included); keep the face/key silhouette detail centered in the open middle band above.</li>
-        <li>Export: flatten, crop to the 70×120mm trim (drop the bleed), save as <strong>.jpg</strong> under the exact filename from the table above. Keep the layered <strong>.clip</strong> master (bleed included) as the archive.</li>
+        <li>If your CSP version offers a template/margin option in the New Canvas dialog, set a <strong>3mm</strong> margin on the top, right and bottom to mark the bleed — otherwise, add a guide layer by hand at 3mm from those edges (Ruler tool, or View → Grid/Guides) once the canvas is open, so you can see trim vs. bleed while you paint.</li>
+        <li>Paint at full canvas size (bleed included); keep the face/key silhouette detail in the right half of the canvas — the left half fades into the card's black text side.</li>
+        <li>Export: flatten, crop to the 75×84mm illustration zone (drop the bleed), save as <strong>.jpg</strong> under the exact filename from the table above. Keep the layered <strong>.clip</strong> master (bleed included) as the archive.</li>
       </ul>
     </div>
 
