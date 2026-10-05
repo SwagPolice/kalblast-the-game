@@ -187,6 +187,9 @@
     .die.rolling { animation: none; }
   }
 
+  /* "Keep the highest" groups (Carnila): the discarded die fades back. */
+  .die.discarded { opacity: 0.35; }
+
   .total {
     font-weight: 800;
     font-size: 26px;
@@ -267,6 +270,9 @@
     <span data-i18n="total" data-lang-content="en">total</span>
     <span data-i18n="total" data-lang-content="fr" hidden>total</span>
     <span data-i18n="total" data-lang-content="da" hidden>i alt</span>
+    <span data-i18n="highest" data-lang-content="en">highest</span>
+    <span data-i18n="highest" data-lang-content="fr" hidden>le plus élevé</span>
+    <span data-i18n="highest" data-lang-content="da" hidden>højeste</span>
   </div>
 
   <p class="visually-hidden" id="announcer" aria-live="polite" style="position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0);"></p>
@@ -309,7 +315,10 @@
   // The dice a character needs, read straight from their card text (e.g.
   // "Roll 1d60 for movement" → 1d60), in order of first appearance. Reading
   // it from the card keeps this page in step with any future rule change.
-  function diceFor(char) {
+  // Always read from the English card, so the "use the highest" wording
+  // below only has to be matched in one language.
+  function diceFor(index) {
+    const char = charactersByLang.en[index];
     const text = `${char.traitDesc} ${char.abilityDesc}`;
     const seen = new Set();
     const groups = [];
@@ -317,7 +326,10 @@
       const notation = `${count}d${sides}`;
       if (seen.has(notation)) continue;
       seen.add(notation);
-      groups.push({ notation, count: Number(count), sides: Number(sides) });
+      // e.g. Carnila: "Roll 2d6 and use the highest result" — keep the best
+      // die instead of adding them up.
+      const keepHighest = new RegExp(`${notation} and use the highest`, 'i').test(text);
+      groups.push({ notation, count: Number(count), sides: Number(sides), keepHighest });
     }
     return groups;
   }
@@ -359,7 +371,7 @@
 
     const area = document.getElementById('dice-area');
     area.innerHTML = '';
-    diceFor(char).forEach(({ notation, count, sides }) => {
+    diceFor(selectedIndex).forEach(({ notation, count, sides, keepHighest }) => {
       const group = document.createElement('div');
       group.className = 'dice-group';
       const row = document.createElement('div');
@@ -371,7 +383,7 @@
         die.className = 'die unrolled';
         die.textContent = `d${sides}`;
         die.setAttribute('aria-label', `${t('roll')} ${notation}`);
-        die.addEventListener('click', () => rollGroup(dice, sides, total, notation));
+        die.addEventListener('click', () => rollGroup(dice, sides, total, notation, keepHighest));
         row.appendChild(die);
         dice.push(die);
       }
@@ -391,13 +403,14 @@
   }
 
   // Clicking any die in a group (e.g. either die of a 2d6) rolls the whole
-  // group: a quick tumble through random faces, then the real result.
-  function rollGroup(dice, sides, totalEl, notation) {
+  // group: a quick tumble through random faces, then the real result —
+  // the sum, or for keep-highest groups the best single die.
+  function rollGroup(dice, sides, totalEl, notation, keepHighest) {
     const results = dice.map(() => rollDie(sides));
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     dice.forEach((die) => {
-      die.classList.remove('unrolled', 'rolling');
+      die.classList.remove('unrolled', 'rolling', 'discarded');
       void die.offsetWidth; // restart the animation on repeat clicks
       die.classList.add('rolling');
       die.disabled = true;
@@ -411,14 +424,22 @@
         die.textContent = results[i];
         die.disabled = false;
       });
-      const sum = results.reduce((a, b) => a + b, 0);
-      if (dice.length > 1) {
+      const announcer = document.getElementById('announcer');
+      if (dice.length === 1) {
+        announcer.textContent = `${notation} — ${t('result')}: ${results[0]}`;
+      } else if (keepHighest) {
+        const best = Math.max(...results);
+        const kept = results.indexOf(best);
+        dice.forEach((die, i) => die.classList.toggle('discarded', i !== kept));
+        totalEl.textContent = `→ ${best}`;
+        totalEl.hidden = false;
+        announcer.textContent = `${notation} — ${t('result')}: ${results.join(', ')}, ${t('highest')} ${best}`;
+      } else {
+        const sum = results.reduce((a, b) => a + b, 0);
         totalEl.textContent = `= ${sum}`;
         totalEl.hidden = false;
+        announcer.textContent = `${notation} — ${t('result')}: ${results.join(' + ')}, ${t('total')} ${sum}`;
       }
-      document.getElementById('announcer').textContent = dice.length > 1
-        ? `${notation} — ${t('result')}: ${results.join(' + ')}, ${t('total')} ${sum}`
-        : `${notation} — ${t('result')}: ${sum}`;
     };
 
     if (reduceMotion) {
@@ -468,6 +489,13 @@
     const langBtn = LANGS.includes(startLang) && document.querySelector(`[data-lang-btn="${startLang}"]`);
     if (langBtn) langBtn.click();
     else setLang('en');
+
+    // Follow #character changes made while the page is open (e.g. editing
+    // the address bar), which don't reload the page.
+    window.addEventListener('hashchange', () => {
+      const i = charactersByLang.en.findIndex((_, j) => slugOf(j) === location.hash.slice(1));
+      if (i !== -1 && i !== selectedIndex) select(i, false);
+    });
   });
 </script>
 </body>
