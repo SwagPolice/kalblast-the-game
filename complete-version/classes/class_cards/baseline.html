@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>KALBLAST Card Generator</title>
   <link rel="icon" type="image/svg+xml" href="../../../favicon.svg">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html-to-image/1.11.11/html-to-image.min.js"></script>
@@ -126,59 +127,120 @@
       gap: 14px;
     }
 
-    /* Tarot Card Dimensions & Vibe */
+    /* Landscape card: illustration fixed to the right, info on the left.
+       Everything sits on one flat black card — the portrait is a single
+       layer that fades to transparent via mask-image, revealing the same
+       black underneath, so there's no second surface for a seam to show
+       against. */
     .card {
-      width: 350px;
-      height: 600px;
+      width: 820px;
+      height: 420px;
       border-radius: 16px;
-      background-size: cover;
-      background-position: center;
       box-shadow: 0 20px 40px rgba(20,4,10,0.7), inset 0 0 0 2px rgba(176, 16, 47, 0.35);
       position: relative;
       overflow: hidden;
+      background: #000;
+    }
+
+    .illustration-layer {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: 46%;
+      background-image: var(--illustration-image);
+      background-size: cover;
+      /* Anchored to the top so portraits taller than the zone are cropped
+         at the bottom only — never through a face. */
+      background-position: center top;
+      -webkit-mask-image: linear-gradient(to right, transparent 0%, black 55%);
+      mask-image: linear-gradient(to right, transparent 0%, black 55%);
+    }
+
+    /* A softer, blurred echo of the portrait bridging the last stretch into
+       black, so the transition reads as a haze rather than a clean gradient
+       cutoff. Uses filter, not backdrop-filter: backdrop-filter doesn't
+       survive the html-to-image PNG export. */
+    .illustration-layer::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: var(--illustration-image);
+      background-size: cover;
+      background-position: center top;
+      filter: blur(34px);
+      opacity: 0.5;
+      -webkit-mask-image: linear-gradient(to right, transparent 0%, black 30%, transparent 62%);
+      mask-image: linear-gradient(to right, transparent 0%, black 30%, transparent 62%);
+    }
+
+    .info-panel {
+      position: relative;
+      width: 56%;
+      height: 100%;
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
-      padding: 20px;
+      justify-content: flex-start;
+      padding: 22px 24px;
       box-sizing: border-box;
     }
 
-    /* Glowing visual background trick */
-    .art-bg {
-      position: absolute;
-      top: 0; left: 0; width: 100%; height: 60%;
-      pointer-events: none;
-      z-index: 1;
-      opacity: 0.25;
+    .name-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
     }
 
-    /* 🛠️ FIXED FOR DOWNLOADS: Frosted Matte Glass Panels without backdrop-filter blur */
-    .character-name-zone, .textbox {
-      /* Made background slightly darker & richer to emulate the opacity/matte filter natively */
-      background: linear-gradient(135deg, rgba(24, 20, 34, 0.82) 0%, rgba(18, 14, 26, 0.88) 100%);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 12px;
-      z-index: 2;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+    /* Placeholder — stands in for characters whose symbol isn't drawn yet. */
+    .symbol-placeholder {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      border: 1.5px dashed color-mix(in srgb, var(--theme-color) 70%, white 15%);
+      color: var(--theme-color-text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 800;
+      flex-shrink: 0;
+      box-sizing: border-box;
     }
 
-    /* Strictly Block layout, anchored completely to the Left */
-    .character-name-zone {
-      padding: 12px 16px;
-      text-align: left;
-      display: block;
-      position: relative;
+    /* Per-character symbol: solid circle in the character's own theme
+       color, icon in the same contrast-safe color as the cost badge. Only
+       shown for characters whose symbol has been drawn (CHARACTER_SYMBOLS). */
+    .symbol-badge {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: var(--theme-color);
+      color: var(--badge-text-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.4), inset 0 0 0 1px rgba(255,255,255,0.2);
+    }
+
+    .symbol-badge svg {
+      width: 60%;
+      height: 60%;
+    }
+
+    .name-block {
+      flex: 1;
+      min-width: 0;
     }
 
     .class-title {
-      font-size: 26px;
+      font-size: 24px;
       font-weight: 900;
       color: #ffffff;
       margin: 0;
       text-transform: uppercase;
       letter-spacing: 1px;
-      text-shadow: 0 2px 10px rgba(0,0,0,0.6);
-      text-align: left;
     }
 
     .class-subtitle {
@@ -188,22 +250,16 @@
       margin: 4px 0 0 0;
       font-weight: 700;
       color: var(--theme-color-text);
-      text-align: left;
-      text-shadow: 0 1px 4px rgba(0,0,0,0.4);
     }
 
-    /* Floating Difficulty Badge Style */
     .difficulty-box {
-      position: absolute;
-      bottom: -14px;
-      right: 14px;
       text-align: center;
       background: #14101c;
       border: 1px solid rgba(255, 255, 255, 0.15);
       padding: 4px 8px;
       border-radius: 6px;
       box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-      z-index: 3;
+      flex-shrink: 0;
     }
 
     .difficulty-label {
@@ -222,10 +278,6 @@
       line-height: 1;
     }
 
-    .textbox {
-      padding: 16px;
-    }
-
     /* Passive Trait Title */
     .section-title {
       font-size: 11px;
@@ -235,7 +287,6 @@
       margin-bottom: 6px;
       color: var(--theme-color-text);
       text-align: left;
-      text-shadow: 0 1px 4px rgba(0,0,0,0.4);
     }
 
     /* Active Ability Flex Container */
@@ -256,7 +307,6 @@
       text-align: left;
       margin: 0;
       white-space: nowrap;
-      text-shadow: 0 1px 4px rgba(0,0,0,0.4);
     }
 
     /* Splash Circle Badge */
@@ -302,7 +352,7 @@
       display: flex;
       align-items: center;
       gap: 10px;
-      margin: 12px 0;
+      margin: 10px 0;
     }
 
     .kalb-divider .kalb-divider-line {
@@ -321,7 +371,8 @@
       font-size: 10px;
       color: #94a3b8;
       text-align: center;
-      margin-top: 10px;
+      margin-top: auto;
+      padding-top: 10px;
     }
 
     /* Download Button Style */
@@ -361,10 +412,40 @@
       border-color: transparent;
     }
 
+    /* The card is a fixed 820px wide, which overflows phone screens. Scale
+       the whole card container down in steps rather than letting the card
+       reflow. Zoom sits on the container, not the card itself, so the
+       "Download PNG" export (which captures the card node) stays full size. */
+    @media screen and (max-width: 900px) {
+      body { padding: 16px; }
+      .card-container { zoom: 0.75; }
+    }
+    @media screen and (max-width: 660px) {
+      .card-container { zoom: 0.55; }
+    }
+    @media screen and (max-width: 500px) {
+      .card-container { zoom: 0.4; }
+    }
+
+    /* Browsers drop background colors and images when printing by default,
+       which would strip the black card and the portrait and leave white
+       text on white paper. Force them to print exactly as on screen. */
     @media print {
+      @page { size: A4 landscape; margin: 10mm; }
+      * {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
       body { background: white; padding: 0; }
-      .card { page-break-inside: avoid; }
-      .download-btn { display: none; }
+      /* Chrome's PDF output rasterizes text-shadow into a dark box behind
+         the glyphs (most visible on the cost badge), so drop it on paper. */
+      .card * { text-shadow: none !important; }
+      .card {
+        box-shadow: inset 0 0 0 2px rgba(176, 16, 47, 0.35);
+        break-inside: avoid;
+      }
+      .card-container { break-inside: avoid; }
+      .download-btn, .lang-bar { display: none; }
     }
   </style>
 </head>
@@ -467,6 +548,20 @@
       return contrastRatio(white, theme) >= contrastRatio(black, theme) ? '#ffffff' : '#14101a';
     }
 
+    // Per-character symbols, drawn so far only for some characters (source
+    // art: ../../shared/<name>.svg, stripped of hidden Inkscape reference
+    // layers). Paths are inlined into each card rather than referenced via
+    // <use href="#..."> — html-to-image clones just the card node for
+    // "Download PNG", so a <symbol> defined elsewhere in the page wouldn't
+    // come along and the icon would export blank. Characters missing here
+    // get a dashed "?" placeholder until their symbol is drawn.
+    const CHARACTER_SYMBOLS = {
+      Clazgreb: `
+        <path d="M 17.456299,23.37325 10.13995,39.280806 h 7.316349 14.633215 7.316866 L 32.089514,23.37325 Z m 7.209896,1.063501 a 6.402195,6.9595079 0 0 1 6.402193,6.959265 6.402195,6.9595079 0 0 1 -6.402193,6.959782 6.402195,6.9595079 0 0 1 -6.402194,-6.959782 6.402195,6.9595079 0 0 1 6.402194,-6.959265 z" />
+        <path d="m 24.773165,27.350269 a 3.6583972,3.9768615 0 0 0 -3.658692,3.976501 3.6583972,3.9768615 0 0 0 3.658692,3.977018 3.6583972,3.9768615 0 0 0 3.658175,-3.977018 3.6583972,3.9768615 0 0 0 -3.658175,-3.976501 z" />
+        <path d="m 24.836876,13.420819 c -5.87452,0.01622 -11.567136,1.790519 -16.1381019,5.030006 V 20.00762 C 6.4012607,21.286906 5.0064962,23.507223 5,25.895678 c 0.1080679,3.472677 2.7728603,6.361487 6.223333,6.332606 l 6.653658,-11.285299 h 14.025853 l 6.65299,11.285299 C 40.362538,32.284828 44.974008,29.978918 45,25.482174 44.9984,22.970022 43.461945,21.250264 40.974983,20.00762 V 18.402212 C 36.396622,15.180186 30.704719,13.423251 24.836876,13.420819 Z" />`,
+    };
+
     // 🏗️ CARD GENERATOR ENGINE
     const body = document.body;
     const cardsWrapper = document.createElement('div');
@@ -488,22 +583,29 @@
         container.style.setProperty('--badge-text-color', deriveBadgeTextColor(char.color));
 
         const cardId = `card-${index}`;
+        // Keyed by the English name so a translated nickname still finds it.
+        const symbolPaths = CHARACTER_SYMBOLS[characters_en[index].name];
+        const symbolMarkup = symbolPaths
+          ? `<div class="symbol-badge"><svg viewBox="0 0 50 50" aria-hidden="true"><g fill="currentColor">${symbolPaths}</g></svg></div>`
+          : '<div class="symbol-placeholder">?</div>';
 
         container.innerHTML = `
-          <div class="card" id="${cardId}" style="background-image: url('${CHARACTER_IMAGES[char.image] || char.image}');">
-            <div class="art-bg" style="background: radial-gradient(circle at center, ${char.color} 0%, rgba(0,0,0,0) 70%);"></div>
+          <div class="card" id="${cardId}" style="--illustration-image: url('${CHARACTER_IMAGES[char.image] || char.image}');">
+            <div class="illustration-layer"></div>
 
-            <div class="character-name-zone">
-              <h1 class="class-title">${char.name}</h1>
-              <p class="class-subtitle">${char.title}</p>
-
-              <div class="difficulty-box">
-                <div class="difficulty-label">${difficultyLabel[currentLang]}</div>
-                <div class="stars">${starIcons}</div>
+            <div class="info-panel">
+              <div class="name-row">
+                ${symbolMarkup}
+                <div class="name-block">
+                  <h1 class="class-title">${char.name}</h1>
+                  <p class="class-subtitle">${char.title}</p>
+                </div>
+                <div class="difficulty-box">
+                  <div class="difficulty-label">${difficultyLabel[currentLang]}</div>
+                  <div class="stars">${starIcons}</div>
+                </div>
               </div>
-            </div>
 
-            <div class="textbox">
               <div class="section-title">⚙️ ${char.traitName}</div>
               <p class="rules-text">${char.traitDesc}</p>
 
