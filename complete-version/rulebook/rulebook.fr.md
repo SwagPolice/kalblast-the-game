@@ -59,7 +59,7 @@ Quand leur présidente, Wanda Olsam, disparaît, ils font la seule chose envisag
 *   `6x` **Jetons Lumière Protectrice**
 *   `3x` **Jetons Mine**
 *   `6x` **Jetons Conseiller**
-*   `1x` **Jeton Marche des Fiertés**
+*   `1x` **Jeton Priorité au Direct**
 *   `1x` **Gabarit de Clazgreb**
 *   `1x` **Gabarit de Brenchilli**
 *   `2x` **Dés à 6 faces**
@@ -102,7 +102,7 @@ Le jeu se déroule dans le sens des aiguilles d'une montre, joueur par joueur.
 ⚠️ **Interaction de Changement d'État :** Chaque fois qu'un joueur change de salle *en dehors* de son propre tour (à cause d'effets de déplacement ou de capacités), il **ne déclenche pas** l'effet de la salle.
 :::
 
-*Portez une attention particulière aux temps de recharge et aux réinitialisations de capacités ! Certaines actions ou capacités passives (comme la passive de Mamie Luc) peuvent se produire pendant le tour d'un adversaire, mais ne peuvent être exécutées qu'une fois par manche.*
+*Portez une attention particulière aux temps de recharge et aux réinitialisations de capacités ! Certaines actions ou capacités passives (comme la passive d'Ego Clemund) peuvent se produire pendant le tour d'un adversaire, mais ne peuvent être exécutées qu'une fois par manche.*
 
 ### Anatomie d'un Tour
 Pendant votre tour, vous **devez** effectuer votre Mouvement Obligatoire et **pouvez** choisir d'utiliser votre Capacité Active. Vous disposez d'une flexibilité tactique complète sur l'ordre de vos actions. Choisissez entre l'**Option A** et l'**Option B** :
