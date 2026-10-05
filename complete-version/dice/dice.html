@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>KALBLAST — Dice roller</title>
+<link rel="icon" type="image/svg+xml" href="../../favicon.svg">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Roll the dice your KALBLAST character's card calls for.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../shared/theme.css">
+<style>
+  /* Same look as the landing page (index.html), whose palette lives in
+     ../shared/theme.css. */
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--void);
+    background-image:
+      radial-gradient(ellipse 900px 500px at 20% -10%, rgba(176,16,47,0.14), transparent 60%),
+      radial-gradient(ellipse 900px 600px at 100% 10%, rgba(251,191,36,0.07), transparent 55%);
+    color: var(--ink);
+    font-family: 'Manrope', 'Segoe UI', Helvetica, Arial, sans-serif;
+    line-height: 1.6;
+    padding: 0 20px 80px;
+  }
+  .wrap { max-width: 860px; margin: 0 auto; }
+  [hidden] { display: none !important; }
+
+  .top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    padding-top: 20px;
+  }
+  .back-link {
+    color: var(--ink-muted);
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.06em;
+  }
+  .back-link:hover { color: var(--kalb-gold); }
+  .lang-btn {
+    background: rgba(255,255,255,0.08);
+    color: var(--ink-muted);
+    border: 1px solid rgba(255,255,255,0.12);
+    padding: 7px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 12.5px;
+    font-weight: 700;
+    font-family: inherit;
+    transition: all 0.15s ease;
+  }
+  .lang-btn + .lang-btn { margin-left: 8px; }
+  .lang-btn.active {
+    background: var(--kalb-gold);
+    color: #000;
+    border-color: transparent;
+  }
+
+  header { padding: 36px 0 8px; }
+  .eyebrow {
+    font-weight: 800; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--kalb-gold); display: block; margin-bottom: 8px;
+  }
+  h1 { margin: 0 0 8px; font-size: 28px; }
+  .lede { color: var(--ink-muted); max-width: 60ch; margin: 0; font-size: 15px; }
+
+  /* ── Character picker ─────────────────────────────────────────── */
+  .picker {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 10px;
+    margin: 28px 0;
+  }
+  .pick-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px;
+    background: var(--panel);
+    border: 1px solid var(--hairline);
+    border-radius: 10px;
+    color: var(--ink);
+    font: 700 14px 'Manrope', sans-serif;
+    text-align: left;
+    cursor: pointer;
+    transition: border-color 0.15s ease, transform 0.15s ease;
+  }
+  .pick-btn:hover { border-color: var(--kalb-gold); transform: translateY(-2px); }
+  .pick-btn[aria-pressed="true"] {
+    border-color: var(--kalb-gold);
+    box-shadow: 0 0 0 1px var(--kalb-gold);
+  }
+  .pick-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    background: var(--dot-color);
+    box-shadow: 0 0 8px var(--dot-color);
+  }
+
+  .empty-hint {
+    padding: 28px;
+    text-align: center;
+    color: var(--ink-faint);
+    border: 1px dashed var(--hairline);
+    border-radius: 12px;
+  }
+
+  /* ── Selected character ───────────────────────────────────────── */
+  /* The card itself is the print-ready PNG from the ZIP downloads, so it
+     always matches the printed card and scales cleanly on any screen. */
+  .card-img {
+    display: block;
+    width: 100%;
+    max-width: 820px;
+    height: auto;
+    margin: 0 auto;
+    border-radius: 16px;
+    box-shadow: 0 20px 40px rgba(20,4,10,0.7);
+  }
+
+  .dice-area {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 28px 40px;
+    margin-top: 32px;
+  }
+  .dice-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+  .dice-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .dice-label {
+    font-weight: 800;
+    font-size: 13px;
+    letter-spacing: 0.1em;
+    color: var(--ink-muted);
+  }
+
+  /* Gold square, red number. */
+  .die {
+    width: 76px;
+    height: 76px;
+    border: none;
+    border-radius: 12px;
+    background: linear-gradient(145deg, #fde68a 0%, var(--kalb-gold) 45%, #d97706 100%);
+    color: var(--kalb-red);
+    font: 800 32px/1 'Manrope', sans-serif;
+    font-variant-numeric: tabular-nums;
+    cursor: pointer;
+    box-shadow:
+      inset 0 2px 0 rgba(255,255,255,0.6),
+      inset 0 -4px 0 rgba(0,0,0,0.18),
+      0 6px 16px rgba(0,0,0,0.45),
+      0 0 18px rgba(251,191,36,0.25);
+    transition: transform 0.1s ease, box-shadow 0.15s ease;
+  }
+  .die:hover { box-shadow: inset 0 2px 0 rgba(255,255,255,0.6), inset 0 -4px 0 rgba(0,0,0,0.18), 0 6px 16px rgba(0,0,0,0.45), 0 0 28px rgba(251,191,36,0.5); }
+  .die:active { transform: scale(0.95); }
+  .die:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; }
+  /* Before the first roll the die shows its size (d6, d60…) instead of a number. */
+  .die.unrolled { font-size: 20px; letter-spacing: 0.02em; }
+  .die.rolling { animation: tumble 0.6s ease-out; }
+  @keyframes tumble {
+    0%   { transform: rotate(0) scale(1); }
+    25%  { transform: rotate(-14deg) scale(0.92); }
+    50%  { transform: rotate(10deg) scale(1.04); }
+    75%  { transform: rotate(-5deg) scale(0.98); }
+    100% { transform: rotate(0) scale(1); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .die.rolling { animation: none; }
+  }
+
+  .total {
+    font-weight: 800;
+    font-size: 26px;
+    color: var(--kalb-gold);
+    min-width: 2.5ch;
+  }
+
+  .tap-hint {
+    margin-top: 18px;
+    text-align: center;
+    font-size: 13px;
+    color: var(--ink-faint);
+  }
+
+  @media (max-width: 480px) {
+    .picker { grid-template-columns: 1fr 1fr; }
+    .die { width: 64px; height: 64px; font-size: 28px; }
+    .die.unrolled { font-size: 18px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="top-bar">
+    <a class="back-link" href="../../index.html">← KALBLAST</a>
+    <div>
+      <button class="lang-btn active" data-lang-btn="en">English</button>
+      <button class="lang-btn" data-lang-btn="fr">Français</button>
+      <button class="lang-btn" data-lang-btn="da">Dansk</button>
+    </div>
+  </div>
+
+  <header>
+    <span class="eyebrow" data-lang-content="en">At the table</span>
+    <span class="eyebrow" data-lang-content="fr" hidden>À table</span>
+    <span class="eyebrow" data-lang-content="da" hidden>Ved bordet</span>
+    <h1>
+      <span data-lang-content="en">Dice roller</span>
+      <span data-lang-content="fr" hidden>Lanceur de dés</span>
+      <span data-lang-content="da" hidden>Terningkaster</span>
+    </h1>
+    <p class="lede">
+      <span data-lang-content="en">Pick your character to see their card and the dice it calls for.</span>
+      <span data-lang-content="fr" hidden>Choisissez votre personnage pour voir sa carte et les dés dont elle a besoin.</span>
+      <span data-lang-content="da" hidden>Vælg din karakter for at se kortet og de terninger, det kræver.</span>
+    </p>
+  </header>
+
+  <div class="picker" id="picker"></div>
+
+  <p class="empty-hint" id="empty-hint">
+    <span data-lang-content="en">No character selected yet.</span>
+    <span data-lang-content="fr" hidden>Aucun personnage sélectionné pour l'instant.</span>
+    <span data-lang-content="da" hidden>Ingen karakter valgt endnu.</span>
+  </p>
+
+  <div id="selection" hidden>
+    <img class="card-img" id="card-img" alt="">
+    <div class="dice-area" id="dice-area"></div>
+    <p class="tap-hint">
+      <span data-lang-content="en">Tap a die to roll it.</span>
+      <span data-lang-content="fr" hidden>Touchez un dé pour le lancer.</span>
+      <span data-lang-content="da" hidden>Tryk på en terning for at slå med den.</span>
+    </p>
+  </div>
+
+  <!-- Words used inside generated markup (button labels, screen-reader
+       announcements). Kept as data-lang-content blocks like the rest of the
+       page so scaffold-language.js picks them up for a new language. -->
+  <div hidden>
+    <span data-i18n="roll" data-lang-content="en">Roll</span>
+    <span data-i18n="roll" data-lang-content="fr" hidden>Lancer</span>
+    <span data-i18n="roll" data-lang-content="da" hidden>Slå</span>
+    <span data-i18n="result" data-lang-content="en">Result</span>
+    <span data-i18n="result" data-lang-content="fr" hidden>Résultat</span>
+    <span data-i18n="result" data-lang-content="da" hidden>Resultat</span>
+    <span data-i18n="total" data-lang-content="en">total</span>
+    <span data-i18n="total" data-lang-content="fr" hidden>total</span>
+    <span data-i18n="total" data-lang-content="da" hidden>i alt</span>
+  </div>
+
+  <p class="visually-hidden" id="announcer" aria-live="polite" style="position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0);"></p>
+
+</div>
+
+<script src="../shared/lang-toggle.js"></script>
+<script>
+  const CARDS_DIR = '../classes/class_cards/';
+  const LANGS = [...document.querySelectorAll('[data-lang-btn]')].map((b) => b.getAttribute('data-lang-btn'));
+  let currentLang = 'en';
+  let selectedIndex = null;
+  let charactersByLang = {};
+
+  // Character data is loaded for every language that has a button on this
+  // page, so adding a language only needs its button (scaffold-language.js
+  // adds it) — no per-language script tags to keep in sync here.
+  function loadScript(src) {
+    return new Promise((resolve, reject) => {
+      const s = document.createElement('script');
+      s.src = src;
+      s.onload = resolve;
+      s.onerror = () => reject(new Error(`Could not load ${src}`));
+      document.head.appendChild(s);
+    });
+  }
+
+  function t(key) {
+    const el = document.querySelector(`[data-i18n="${key}"][data-lang-content="${currentLang}"]`)
+      || document.querySelector(`[data-i18n="${key}"][data-lang-content="en"]`);
+    return el.textContent;
+  }
+
+  // Same rule as baseline.html's cardFilename(): always slugged from the
+  // English name, so it matches the PNGs in print-assets/<lang>/.
+  function slugOf(index) {
+    return charactersByLang.en[index].name.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '');
+  }
+
+  // The dice a character needs, read straight from their card text (e.g.
+  // "Roll 1d60 for movement" → 1d60), in order of first appearance. Reading
+  // it from the card keeps this page in step with any future rule change.
+  function diceFor(char) {
+    const text = `${char.traitDesc} ${char.abilityDesc}`;
+    const seen = new Set();
+    const groups = [];
+    for (const [, count, sides] of text.matchAll(/(\d+)d(\d+)/g)) {
+      const notation = `${count}d${sides}`;
+      if (seen.has(notation)) continue;
+      seen.add(notation);
+      groups.push({ notation, count: Number(count), sides: Number(sides) });
+    }
+    return groups;
+  }
+
+  // Uniform integer in [1, sides], using rejection sampling over a
+  // cryptographic random source so no face is favoured.
+  function rollDie(sides) {
+    const buf = new Uint32Array(1);
+    const limit = Math.floor(0x100000000 / sides) * sides;
+    do { crypto.getRandomValues(buf); } while (buf[0] >= limit);
+    return (buf[0] % sides) + 1;
+  }
+
+  function renderPicker() {
+    const picker = document.getElementById('picker');
+    picker.innerHTML = '';
+    charactersByLang[currentLang].forEach((char, index) => {
+      const btn = document.createElement('button');
+      btn.className = 'pick-btn';
+      btn.setAttribute('aria-pressed', String(index === selectedIndex));
+      btn.style.setProperty('--dot-color', char.color);
+      btn.innerHTML = `<span class="pick-dot"></span><span></span>`;
+      btn.lastChild.textContent = char.name;
+      btn.addEventListener('click', () => select(index, true));
+      picker.appendChild(btn);
+    });
+  }
+
+  function renderSelection() {
+    const hasSelection = selectedIndex !== null;
+    document.getElementById('empty-hint').hidden = hasSelection;
+    document.getElementById('selection').hidden = !hasSelection;
+    if (!hasSelection) return;
+
+    const char = charactersByLang[currentLang][selectedIndex];
+    const img = document.getElementById('card-img');
+    img.src = `${CARDS_DIR}print-assets/${currentLang}/${slugOf(selectedIndex)}_${currentLang}_card.png`;
+    img.alt = `${char.name} — ${char.title}`;
+
+    const area = document.getElementById('dice-area');
+    area.innerHTML = '';
+    diceFor(char).forEach(({ notation, count, sides }) => {
+      const group = document.createElement('div');
+      group.className = 'dice-group';
+      const row = document.createElement('div');
+      row.className = 'dice-row';
+
+      const dice = [];
+      for (let i = 0; i < count; i++) {
+        const die = document.createElement('button');
+        die.className = 'die unrolled';
+        die.textContent = `d${sides}`;
+        die.setAttribute('aria-label', `${t('roll')} ${notation}`);
+        die.addEventListener('click', () => rollGroup(dice, sides, total, notation));
+        row.appendChild(die);
+        dice.push(die);
+      }
+
+      const total = document.createElement('span');
+      total.className = 'total';
+      total.hidden = true;
+      if (count > 1) row.appendChild(total);
+
+      const label = document.createElement('div');
+      label.className = 'dice-label';
+      label.textContent = notation;
+
+      group.append(row, label);
+      area.appendChild(group);
+    });
+  }
+
+  // Clicking any die in a group (e.g. either die of a 2d6) rolls the whole
+  // group: a quick tumble through random faces, then the real result.
+  function rollGroup(dice, sides, totalEl, notation) {
+    const results = dice.map(() => rollDie(sides));
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    dice.forEach((die) => {
+      die.classList.remove('unrolled', 'rolling');
+      void die.offsetWidth; // restart the animation on repeat clicks
+      die.classList.add('rolling');
+      die.disabled = true;
+    });
+    totalEl.hidden = true;
+
+    let ticker = null;
+    const finish = () => {
+      clearInterval(ticker);
+      dice.forEach((die, i) => {
+        die.textContent = results[i];
+        die.disabled = false;
+      });
+      const sum = results.reduce((a, b) => a + b, 0);
+      if (dice.length > 1) {
+        totalEl.textContent = `= ${sum}`;
+        totalEl.hidden = false;
+      }
+      document.getElementById('announcer').textContent = dice.length > 1
+        ? `${notation} — ${t('result')}: ${results.join(' + ')}, ${t('total')} ${sum}`
+        : `${notation} — ${t('result')}: ${sum}`;
+    };
+
+    if (reduceMotion) {
+      finish();
+      return;
+    }
+    ticker = setInterval(() => {
+      dice.forEach((die) => { die.textContent = rollDie(sides); });
+    }, 60);
+    setTimeout(finish, 600);
+  }
+
+  function select(index, updateHash) {
+    selectedIndex = index;
+    renderPicker();
+    renderSelection();
+    if (updateHash) {
+      history.replaceState(null, '', `#${slugOf(index)}`);
+      // On phones the picker fills the screen; bring the card and dice into view.
+      document.getElementById('selection').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+  }
+
+  function setLang(lang) {
+    currentLang = lang;
+    document.querySelectorAll('[data-lang-content]').forEach((el) => {
+      el.hidden = el.getAttribute('data-lang-content') !== lang;
+    });
+    renderPicker();
+    renderSelection();
+  }
+
+  Promise.all(LANGS.map((l) => loadScript(`${CARDS_DIR}characters.${l}.js`))).then(() => {
+    // characters_<lang> are top-level consts in classic scripts, so they're
+    // reachable by name from global code but not as window properties.
+    LANGS.forEach((l) => { charactersByLang[l] = Function(`return characters_${l};`)(); });
+
+    initLangToggle(setLang);
+
+    // A link can preselect language (?lang=fr) and character (#clazgreb).
+    const params = new URLSearchParams(location.search);
+    const startLang = params.get('lang');
+    const hashSlug = location.hash.slice(1);
+    const hashIndex = charactersByLang.en.findIndex((_, i) => slugOf(i) === hashSlug);
+    if (hashIndex !== -1) selectedIndex = hashIndex;
+
+    const langBtn = LANGS.includes(startLang) && document.querySelector(`[data-lang-btn="${startLang}"]`);
+    if (langBtn) langBtn.click();
+    else setLang('en');
+  });
+</script>
+</body>
+</html>
