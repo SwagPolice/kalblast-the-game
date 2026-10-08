@@ -150,6 +150,8 @@
     font-size: 13px;
     letter-spacing: 0.1em;
     color: var(--ink-muted);
+    max-width: 150px;
+    text-align: center;
   }
 
   /* Gold square, red number. */
@@ -273,6 +275,9 @@
     <span data-i18n="highest" data-lang-content="en">highest</span>
     <span data-i18n="highest" data-lang-content="fr" hidden>le plus élevé</span>
     <span data-i18n="highest" data-lang-content="da" hidden>højeste</span>
+    <span data-i18n="movement" data-lang-content="en">Movement</span>
+    <span data-i18n="movement" data-lang-content="fr" hidden>Déplacement</span>
+    <span data-i18n="movement" data-lang-content="da" hidden>Bevægelse</span>
   </div>
 
   <p class="visually-hidden" id="announcer" aria-live="polite" style="position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0);"></p>
@@ -315,22 +320,41 @@
   // The dice a character needs, read straight from their card text (e.g.
   // "Roll 1d60 for movement" → 1d60), in order of first appearance. Reading
   // it from the card keeps this page in step with any future rule change.
-  // Always read from the English card, so the "use the highest" wording
-  // below only has to be matched in one language.
+  // Always read from the English card, so the phrase-matching below only
+  // has to work in one language.
+  //
+  // Each group is also tagged with a labelKey saying what it's FOR, derived
+  // from the same card fields rather than a separate hardcoded label (which
+  // could drift): the first dice mention in traitDesc is always the
+  // character's movement roll (every card is written "Roll NdM for
+  // movement..."), and anything else — a second trait die (Hans Pinner), or
+  // an ability die that happens to share a notation with movement (Ego
+  // Clemund's 1d6, Clazgreb's 1d60) — is labelled with whichever field it
+  // came from, so same-notation dice used for different things don't get
+  // silently merged into one unlabelled group.
   function diceFor(index) {
     const char = charactersByLang.en[index];
-    const text = `${char.traitDesc} ${char.abilityDesc}`;
     const seen = new Set();
     const groups = [];
-    for (const [, count, sides] of text.matchAll(/(\d+)d(\d+)/g)) {
-      const notation = `${count}d${sides}`;
-      if (seen.has(notation)) continue;
-      seen.add(notation);
-      // e.g. Carnila: "Roll 2d6 and use the highest result" — keep the best
-      // die instead of adding them up.
-      const keepHighest = new RegExp(`${notation} and use the highest`, 'i').test(text);
-      groups.push({ notation, count: Number(count), sides: Number(sides), keepHighest });
+
+    function extract(text, labelKeyDefault, isTraitField) {
+      let isFirstInField = true;
+      for (const [, count, sides] of text.matchAll(/(\d+)d(\d+)/g)) {
+        const notation = `${count}d${sides}`;
+        const labelKey = (isTraitField && isFirstInField) ? 'movement' : labelKeyDefault;
+        isFirstInField = false;
+        const seenKey = `${notation}|${labelKey}`;
+        if (seen.has(seenKey)) continue;
+        seen.add(seenKey);
+        // e.g. Carnila: "Roll 2d6 and use the highest result" — keep the
+        // best die instead of adding them up.
+        const keepHighest = new RegExp(`${notation} and use the highest`, 'i').test(text);
+        groups.push({ notation, count: Number(count), sides: Number(sides), keepHighest, labelKey });
+      }
     }
+
+    extract(char.traitDesc, 'trait', true);
+    extract(char.abilityDesc, 'ability', false);
     return groups;
   }
 
@@ -369,20 +393,29 @@
     img.src = `${CARDS_DIR}print-assets/${currentLang}/${slugOf(selectedIndex)}_${currentLang}_card.png`;
     img.alt = `${char.name} — ${char.title}`;
 
+    // 'movement' is a translated UI string; 'trait'/'ability' point back at
+    // this character's own (already-translated) trait/ability name, so the
+    // label is always in the currently displayed language.
+    function labelFor(labelKey) {
+      if (labelKey === 'movement') return t('movement');
+      return labelKey === 'trait' ? char.traitName : char.abilityName;
+    }
+
     const area = document.getElementById('dice-area');
     area.innerHTML = '';
-    diceFor(selectedIndex).forEach(({ notation, count, sides, keepHighest }) => {
+    diceFor(selectedIndex).forEach(({ notation, count, sides, keepHighest, labelKey }) => {
       const group = document.createElement('div');
       group.className = 'dice-group';
       const row = document.createElement('div');
       row.className = 'dice-row';
+      const purpose = labelFor(labelKey);
 
       const dice = [];
       for (let i = 0; i < count; i++) {
         const die = document.createElement('button');
         die.className = 'die unrolled';
         die.textContent = `d${sides}`;
-        die.setAttribute('aria-label', `${t('roll')} ${notation}`);
+        die.setAttribute('aria-label', `${t('roll')} ${notation} — ${purpose}`);
         die.addEventListener('click', () => rollGroup(dice, sides, total, notation, keepHighest));
         row.appendChild(die);
         dice.push(die);
@@ -395,7 +428,7 @@
 
       const label = document.createElement('div');
       label.className = 'dice-label';
-      label.textContent = notation;
+      label.textContent = `${purpose} · ${notation}`;
 
       group.append(row, label);
       area.appendChild(group);
