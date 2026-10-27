@@ -14,7 +14,7 @@
     "check:print-assets": "node complete-version/scripts/check-print-assets.js"
   },
   "devDependencies": {
-    "markdown-it": "^14.1.0",
+    "markdown-it": "^14.3.3",
     "markdown-it-container": "^4.0.0",
     "puppeteer-core": "^25.11.0"
   }
